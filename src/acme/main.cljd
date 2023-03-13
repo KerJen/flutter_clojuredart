@@ -1,0 +1,13 @@
+(ns acme.main
+  (:require ["package:flutter/material.dart" :as m]
+            [acme.home_screen :as home]))
+
+
+
+(defn main []
+  (m/runApp
+   (m/MaterialApp
+    .home home/HomeScreen)))
+
+
+

@@ -1,0 +1,44 @@
+(ns acme.home_screen
+  (:require ["package:flutter/material.dart" :as m]
+            [cljd.flutter.alpha :as fa]
+            [cljd.flutter :as f]))
+
+
+
+(defn random-color []
+  (m/Color.fromRGBO (rand-int 256)
+                    (rand-int 256)
+                    (rand-int 256)
+                    1))
+
+(defn random-size [] (+ (rand 150) 50))
+
+(def config (atom {:left 0 :top 0 :height (random-size) :width (random-size)  :color (random-color)}))
+
+(def HomeScreen
+  (m/Scaffold
+   .body (fa/nest
+          (f/widget
+           :get [m/MediaQuery]
+           (m/GestureDetector
+            .onTap #(let [height (random-size)
+                          width (random-size)]
+                      (swap! config assoc
+                             :left (rand (- (.width (.-size media-query)) width))
+                             :top (rand (- (.height (.-size media-query)) height))
+                             :height height
+                             :width width
+                             :color (random-color)))))
+          (f/widget
+           :watch [{:keys [left top height width color]} config]
+           (m/AnimatedContainer
+            .duration (Duration .milliseconds 400)
+            .curve (m/Curves.fastOutSlowIn)
+            .height height
+            .width width
+            .margin (m/EdgeInsets.only
+                     .left left
+                     .top top)
+            .alignment m/Alignment.center
+            .color color
+            .child (m/Text "Hello"))))))
